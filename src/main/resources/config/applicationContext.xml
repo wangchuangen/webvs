@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"	xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd 
+		http://www.directwebremoting.org/schema/spring-dwr http://www.directwebremoting.org/schema/spring-dwr-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+		default-autowire="byName">
+
+	<context:component-scan base-package="org.wang.chuangen.webvs.service.impl" />
+	
+	<!-- 
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="org.apache.derby.jdbc.ClientDriver"/>
+		<property name="url" value="jdbc:derby://localhost:1527/data;create=true"/>
+		<property name="minIdle" value="1"/>
+	</bean>
+	 -->
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+		<property name="url" value="jdbc:derby:data;create=true"/>
+		<property name="minIdle" value="1"/>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:org/wang/chuangen/webvs/mapper/*Dao.xml" />
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	   	<property name="basePackage" value="org.wang.chuangen.webvs.dao"></property>
+	   	<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean class="org.wang.chuangen.webvs.listener.ContextListener"/>
+     
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<tx:advice id="manager" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="SUPPORTS"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="serviceMethods" expression="execution(* org.wang.chuangen.webvs.service.*.*(..))"/>
+		<aop:advisor advice-ref="manager" pointcut-ref="serviceMethods"/>
+	</aop:config>
+</beans>
