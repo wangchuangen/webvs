@@ -28,13 +28,18 @@ public class Context{
 		return applicationContext;
 	}
 	
-	public static <T> T getBean(Class<T> requiredType){
-		ApplicationContext context=getInstance().getApplicationContext();
-		return context.getBean(requiredType);
-	}
-	
 	public static Object getBean(String beanName){
 		ApplicationContext context=getInstance().getApplicationContext();
 		return context.getBean(beanName);
+	}
+	
+	public static <T> T getBean(String name, Class<T> requiredType){
+		ApplicationContext context=getInstance().getApplicationContext();
+		return context.getBean(name, requiredType);
+	}
+	
+	public static <T> T getBean(Class<T> requiredType){
+		ApplicationContext context=getInstance().getApplicationContext();
+		return context.getBean(requiredType);
 	}
 }

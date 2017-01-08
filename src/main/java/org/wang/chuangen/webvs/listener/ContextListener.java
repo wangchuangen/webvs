@@ -4,7 +4,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.wang.chuangen.webvs.service.ResourceService;
-import org.wang.chuangen.webvs.service.impl.ResourceServiceImpl;
 import org.wang.chuangen.webvs.util.RefreshDatabase;
 import org.wang.chuangen.webvs.Context;
 
@@ -19,7 +18,7 @@ public class ContextListener implements ApplicationListener<ContextRefreshedEven
 		isExecuteOk = true;
 		ApplicationContext applicationContext=event.getApplicationContext();
 		Context.getInstance().setApplicationContext(applicationContext);
-		ResourceService resourceService=Context.getBean(ResourceServiceImpl.class);
+		ResourceService resourceService=Context.getBean("resourceService", ResourceService.class);
 		//resourceService.rebuildDatabase();
 		int s=resourceService.isExistTable("RESOURCE");
 		if(s == 0){
